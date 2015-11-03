@@ -4,9 +4,18 @@ import os
 from birdy.twitter import StreamClient
 import json
 import sqlite3
+import sys
+from time import strftime
 
 databasefile = 'links.db'
 keywordsfile = 'keywords.txt'
+tweetlogfile = 'tweets-' + strftime("%Y-%m-%d") + '.log'
+
+try:
+    tweetlog = open(tweetlogfile, "a")
+except:
+    print "Unable to open tweet log file."
+    sys.exit()
 
 with open(keywordsfile) as f:
     keywords = f.read().splitlines()
@@ -32,6 +41,7 @@ client = StreamClient(tokens['consumer_key'],tokens['consumer_secret'],tokens['a
 resource = client.stream.statuses.filter.post(track=keywords_string)
 
 for data in resource.stream():
+   tweetlog.write(json.dumps(data) + '\n')
    print json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
    print "Followers:", data['user']['followers_count']
    print "Retweets:", data['retweet_count']
