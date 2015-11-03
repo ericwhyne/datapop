@@ -1,2 +1,3 @@
 pyyaml
 birdy
+beautifulsoup4
