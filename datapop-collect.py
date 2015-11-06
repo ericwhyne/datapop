@@ -43,11 +43,7 @@ resource = client.stream.statuses.filter.post(track=keywords_string)
 for data in resource.stream():
    tweetlog.write(json.dumps(data) + '\n')
    print json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-   print "Followers:", data['user']['followers_count']
-   print "Retweets:", data['retweet_count']
-   print "Timestamp:", data['timestamp_ms']
    for url in data['entities']['urls']:
      c.execute("INSERT INTO twitterlinks VALUES (?,?,?,?,?,?)",
         (int(data['timestamp_ms']), int(data['user']['followers_count']), int(data['retweet_count']), int(data['favorite_count']), data['id_str'], url['expanded_url']))
-     print "url:", url['expanded_url']
    conn.commit()
